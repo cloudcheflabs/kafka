@@ -17,8 +17,5 @@ curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango
 mv confluent-community-7.5.3.tar.gz roles/kafka/files/
 
 
-# download bastion for ansible.
-curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/bastion-venv.tar.gz
-
 
 
