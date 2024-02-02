@@ -9,12 +9,12 @@ curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango
 mv apache-maven-3.9.3-bin.tar.gz roles/maven/files/
 
 # download zookeeper.
-curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/apache-zookeeper-3.6.4-bin.tar.gz
-mv apache-zookeeper-3.6.4-bin.tar.gz roles/zookeeper/files/
+curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/apache-zookeeper-3.8.3-bin.tar.gz
+mv apache-zookeeper-3.8.3-bin.tar.gz roles/zookeeper/files/
 
 # download kafka
-curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/confluent-community-7.4.0.tar.gz
-mv confluent-community-7.4.0.tar.gz roles/kafka/files/
+curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/confluent-community-7.5.3.tar.gz
+mv confluent-community-7.5.3.tar.gz roles/kafka/files/
 
 
 # download bastion for ansible.

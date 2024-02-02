@@ -10,7 +10,7 @@ zookeeper_pid_dir: /var/run/zookeeper
 
 zookeeper_data_dir: /export/lib/zookeeper
 
-zookeeper_dist_name: apache-zookeeper-3.6.4-bin
+zookeeper_dist_name: apache-zookeeper-3.8.3-bin
 
 zookeeper_dist_file: "{{ zookeeper_dist_name }}.tar.gz"
 
