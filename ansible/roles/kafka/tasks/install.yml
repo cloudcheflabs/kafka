@@ -190,4 +190,7 @@
   when: inventory_hostname in groups['kafka-schema-registry-hosts']
   become_user: kafka
 
+- name: Adding kafka ui
+  include_tasks: "{{ playbook_dir }}/roles/{{ role_name }}/tasks/kafka-ui.yml"
+
   

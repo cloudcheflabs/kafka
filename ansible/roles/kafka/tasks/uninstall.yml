@@ -19,6 +19,15 @@
   when: inventory_hostname in groups['kafka-schema-registry-hosts']
   ignore_errors: true
 
+- name: Stopping kafka ui
+  shell: "kill $(cat pid)"
+  args:
+    chdir: "{{ kafka_kafkaui_home }}"
+    executable: /bin/bash
+  become_user: kafkaui
+  when: inventory_hostname in groups['kafka-ui-hosts']
+  ignore_errors: true
+
 - name: Sleeping for a while
   shell: "{{ item }}"
   args:
@@ -47,7 +56,19 @@
   - "{{ kafka_data_dir1 }}"
   - "{{ kafka_data_dir2 }}"
   ignore_errors: true
-  
+
+
+- name: Removing kafka ui directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ kafka_kafkaui_home }}"
+    - "{{ kafka_kafkaui_conf_dir }}"
+    - "{{ kafka_kafkaui_log_dir }}"
+  ignore_errors: true
+
+
 - name: Removing Users
   user:
     name: "{{ item }}"

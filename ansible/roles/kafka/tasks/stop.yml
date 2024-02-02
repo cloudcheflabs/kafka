@@ -18,3 +18,12 @@
   - bin/schema-registry-stop
   when: inventory_hostname in groups['kafka-schema-registry-hosts']
   ignore_errors: true
+
+- name: Stopping kafka ui
+  shell: "kill $(cat pid)"
+  args:
+    chdir: "{{ kafka_kafkaui_home }}"
+    executable: /bin/bash
+  become_user: kafkaui
+  when: inventory_hostname in groups['kafka-ui-hosts']
+  ignore_errors: true

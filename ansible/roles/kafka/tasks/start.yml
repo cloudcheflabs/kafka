@@ -10,3 +10,13 @@
     chdir: "{{ kafka_home }}"
   when: inventory_hostname in groups['kafka-schema-registry-hosts']
   become_user: kafka
+
+- name: Starting kafkaui server
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ kafka_kafkaui_home }}"
+  with_items:
+    - "chmod +x start-kafka-ui.sh"
+    - "echo -ne '\\n' | ./start-kafka-ui.sh"
+  when: inventory_hostname in groups['kafka-ui-hosts']
+  become_user: kafkaui

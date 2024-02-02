@@ -1,0 +1,7 @@
+kafka:
+  clusters:
+    - bootstrapServers: {{ kafka_kafkaui_kafka_brokers }}
+      schemaRegistry: http://{{ kafka_schema_registry_host }}:{{ kafka_schema_registry_server_port }}
+dynamic:
+  config:
+    enabled: true

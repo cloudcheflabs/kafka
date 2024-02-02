@@ -40,3 +40,12 @@ kafka_broker3_host: "{{ hostvars[groups['kafka-hosts'][2]]['inventory_hostname']
 
 kafka_schema_registry_kafka_brokers: "{{ kafka_broker1_host }}:9092,{{ kafka_broker2_host }}:9092,{{ kafka_broker3_host }}:9092"
 kafka_schema_registry_server_port: "8081"
+kafka_schema_registry_host: "{{ hostvars[groups['kafka-schema-registry-hosts'][0]]['inventory_hostname'] }}"
+
+kafka_kafkaui_home: /usr/lib/kafka-ui
+kafka_kafkaui_conf_dir: /etc/kafka-ui/conf
+kafka_kafkaui_log_dir: /export/log/kafka-ui
+kafka_kafkaui_dist_file: kafka-ui-api-v0.7.1.jar
+kafka_kafkaui_port: "8080"
+kafka_kafkaui_kafka_brokers: "{{ kafka_schema_registry_kafka_brokers }}"
+kafka_kafkaui_max_heap: "4G"
