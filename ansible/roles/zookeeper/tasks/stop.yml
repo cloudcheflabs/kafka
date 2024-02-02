@@ -1,0 +1,6 @@
+- name: Stopping zookeeper Server
+  service: 
+    name: zookeeper 
+    state: stopped  
+  become: true
+  ignore_errors: true

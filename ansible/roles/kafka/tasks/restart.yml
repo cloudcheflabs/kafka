@@ -1,0 +1,10 @@
+- include: stop.yml
+
+- name: Sleeping for a while
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "sleep 10"
+
+- include: start.yml

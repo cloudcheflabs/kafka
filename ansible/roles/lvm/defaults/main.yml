@@ -1,0 +1,13 @@
+---
+raw_disks: "/dev/sdb,/dev/sdc"
+vg_name: "share"
+lv_name: "chango-private-lv"
+
+# 'FREE' for the first time, 'VG' for the second time.
+require_lv_size_option: "FREE"
+require_lv_size: "100%{{ require_lv_size_option }}"
+fs: "ext4"
+mount_point: "/export"
+
+
+

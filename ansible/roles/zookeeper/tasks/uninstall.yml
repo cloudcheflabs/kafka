@@ -1,0 +1,34 @@
+- name: Stopping zookeeper Server
+  service:
+    name: zookeeper
+    state: stopped
+  become: true
+  ignore_errors: true
+
+- name: Sleeping for a while
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "sleep 10"
+
+- name: Removing Zookeeper directories
+  file:
+    path: "{{ item }}"
+    state: absent   
+  with_items:
+  - "{{ zookeeper_home }}"
+  - "{{ zookeeper_conf_dir }}"
+  - "{{ zookeeper_log_dir }}"
+  - "{{ zookeeper_data_dir }}"
+  ignore_errors: true
+
+- name: Removing Users
+  user:
+    name: "{{ item }}"
+    state: absent
+  become: true
+  with_items:
+  - "zookeeper"
+  ignore_errors: true
+ 

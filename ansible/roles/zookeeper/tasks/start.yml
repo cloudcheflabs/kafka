@@ -1,0 +1,6 @@
+- name: Staring zookeeper Server
+  shell: /etc/init.d/zookeeper start
+  args:
+    executable: /bin/bash 
+  become: true
+  become_user: root

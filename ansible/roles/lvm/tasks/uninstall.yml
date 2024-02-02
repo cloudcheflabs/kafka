@@ -1,0 +1,25 @@
+- name: Unmount.
+  mount:
+    path: "{{ mount_point }}"
+    state: unmounted
+  ignore_errors: true
+
+- name: Removing the "{{ lv_name }}" Logical Volume.
+  lvol:
+    vg: "{{ vg_name }}"
+    lv: "{{ lv_name }}"
+    force: yes
+    state: absent
+  ignore_errors: true
+
+- name: Removing the "{{ vg_name }}" Volume group.
+  lvg:
+    vg: "{{ vg_name }}"
+    force: yes
+    state: absent
+  ignore_errors: true
+
+
+ 
+ 
+ 

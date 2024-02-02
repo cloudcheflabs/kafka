@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# 
+# Starts Zookeeper
+# 
+# chkconfig: 2345 80 10
+# description: Zookeeper
+
+source /etc/profile
+source /etc/zookeeper/conf/zookeeper-env.sh
+source /etc/rc.d/init.d/functions
+
+RETVAL=0
+PIDFILE="${ZOOKEEPER_PID_DIR}/zookeeper-server.pid"
+desc="Zookeeper daemon"
+
+start() {
+  echo -n $"Starting $desc (zookeeper): "
+  daemon --user zookeeper ${ZOOKEEPER_HOME}/bin/zkServer.sh start
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/zookeeper
+  return $RETVAL
+}
+
+upgrade() {
+  start -upgrade
+}
+
+stop() {
+  echo -n $"Stopping $desc (zookeeper): "
+  daemon --user zookeeper ${ZOOKEEPER_HOME}/bin/zkServer.sh stop
+  RETVAL=$?
+  sleep 5
+  echo
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/zookeeper $PIDFILE
+}
+
+checkstatus(){
+  echo $"$desc $(status -p $PIDFILE)"
+  RETVAL=$?
+}
+
+restart() {
+  stop
+  start
+}
+
+condrestart(){
+  [ -e /var/lock/subsys/zookeeper ] && restart || :
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  upgrade)
+    upgrade
+    ;;  
+  stop)
+    stop
+    ;;
+  status)
+    checkstatus
+    ;;
+  restart)
+    restart
+    ;;
+  condrestart|try-restart)
+    condrestart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|try-restart|upgrade}"
+    exit 1
+esac
+
+exit $RETVAL

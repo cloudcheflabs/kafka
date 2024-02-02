@@ -1,0 +1,42 @@
+---
+
+kafka_home: /usr/lib/kafka
+kafka_conf_dir: /etc/kafka-confluent/conf
+
+kafka_server_conf_dir: "{{ kafka_conf_dir }}/kafka"
+kafka_schema_registry_conf_dir: "{{ kafka_conf_dir }}/schema-registry"
+
+kafka_log_dir: /export/log/kafka
+
+kafka_data_dir1: /export/kafka-data/data01
+kafka_data_dir2: /export/kafka-data/data02
+
+kafka_data_dir: "{{ kafka_data_dir1 }},{{ kafka_data_dir2 }}"
+
+kafka_zk1_host: "{{ hostvars[groups['zookeeper-hosts'][0]]['inventory_hostname'] }}"
+kafka_zk2_host: "{{ hostvars[groups['zookeeper-hosts'][1]]['inventory_hostname'] }}"
+kafka_zk3_host: "{{ hostvars[groups['zookeeper-hosts'][2]]['inventory_hostname'] }}"
+
+kafka_zk_hosts: "{{ kafka_zk1_host }}:2181,{{ kafka_zk2_host }}:2181,{{ kafka_zk3_host }}:2181"
+
+kafka_dist_name: confluent-community-7.4.0
+kafka_dist_file: "{{ kafka_dist_name }}.tar.gz"
+kafka_dist_dir: confluent-7.4.0
+
+kafka_temp_dir: /tmp/kafka
+
+kafka_java_home: /usr/lib/jdk
+
+kafka_delete_topic_enable: true
+kafka_offsets_topic_repl_factor: 2
+
+kafka_heap_opts: "-Xmx1G -Xms1G"
+
+kafka_server_port: "9092"
+
+kafka_broker1_host: "{{ hostvars[groups['kafka-hosts'][0]]['inventory_hostname'] }}"
+kafka_broker2_host: "{{ hostvars[groups['kafka-hosts'][1]]['inventory_hostname'] }}"
+kafka_broker3_host: "{{ hostvars[groups['kafka-hosts'][2]]['inventory_hostname'] }}"
+
+kafka_schema_registry_kafka_brokers: "{{ kafka_broker1_host }}:9092,{{ kafka_broker2_host }}:9092,{{ kafka_broker3_host }}:9092"
+kafka_schema_registry_server_port: "8081"

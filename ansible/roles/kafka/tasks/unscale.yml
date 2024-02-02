@@ -1,0 +1,16 @@
+- name: Stopping kafka
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ kafka_home }}"
+    executable: /bin/bash
+  become_user: kafka
+  with_items:
+  - bin/kafka-server-stop
+  ignore_errors: true
+
+- name: Sleeping for a while
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "sleep 10"

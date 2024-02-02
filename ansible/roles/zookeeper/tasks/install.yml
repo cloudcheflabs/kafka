@@ -1,0 +1,232 @@
+
+
+- name: Setting selinux to permissive
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "setenforce 0"
+    - "sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config"
+    - "sed -i 's/SELINUX=disabled/SELINUX=permissive/g' /etc/selinux/config"
+  become: true
+  ignore_errors: true
+
+- name: Creating system group hadoop
+  group:
+    name: hadoop
+    state: present
+  become: true
+
+- name: Creating system account zk
+  user:
+    name: zookeeper
+    groups: hadoop
+    state: present
+    createhome: no
+  become: true
+
+- name: Creating Zookeeper directories
+  file:
+    path: "{{ item }}"
+    state: directory 
+    owner: zookeeper 
+    group: hadoop
+    mode: 0755
+  with_items:
+  - "{{ zookeeper_home }}"
+  - "{{ zookeeper_conf_dir }}"
+  - "{{ zookeeper_log_dir }}"
+  - "{{ zookeeper_pid_dir }}"
+  - "{{ zookeeper_data_dir }}" 
+  ignore_errors: true
+    
+- name: Creating zookeeper temp directory
+  file:
+    path: "{{ zookeeper_temp_dir }}"
+    state: directory 
+    mode: 0777
+
+- name: Open Ports
+  shell: "firewall-cmd --zone=public --add-port={{ item }}/tcp --permanent || true"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "{{ zookeeper_server_port }}"
+    - "{{ zookeeper_cluster_port_1 }}"
+    - "{{ zookeeper_cluster_port_2 }}"
+  ignore_errors: true
+  become: true
+
+- name: Reload Firewall
+  shell: "firewall-cmd --reload || true"
+  args:
+    executable: /bin/bash
+  become: true
+  ignore_errors: true
+
+
+- name: Copying Zookeeper Distribution
+  copy:
+    src: "{{ playbook_dir }}/roles/{{ role_name }}/files/{{ zookeeper_dist_file }}"
+    dest: "{{ zookeeper_temp_dir }}"
+     
+- name: Extracting Zookeeper
+  shell: tar -zxf {{ zookeeper_temp_dir }}/{{ zookeeper_dist_file }} -C {{ zookeeper_temp_dir }}
+  args:
+    executable: /bin/bash 
+    
+- name: Copying Zookeeper files to Zookeeper home
+  shell: cp -R {{ zookeeper_temp_dir }}/{{ zookeeper_dist_name }}/* {{ zookeeper_home }}
+  args:
+    executable: /bin/bash 
+    
+- name: chown to Zookeeper home
+  file:
+    path: "{{ zookeeper_home }}"
+    owner: zookeeper
+    group: hadoop
+    state: directory
+    recurse: yes  
+    
+- name: Removing zookeeper in tmp
+  shell: sudo su - -c 'rm -rf {{ zookeeper_temp_dir }}'
+  args:
+    executable: /bin/bash  
+ 
+- name: Copying configuration file in {{ zookeeper_home }}/conf to {{ zookeeper_conf_dir }}
+  shell: cp {{ zookeeper_home }}/conf/* {{ zookeeper_conf_dir }}
+  args:
+    executable: /bin/bash      
+    
+- name: Removing {{ zookeeper_home }}/conf
+  shell: sudo su - -c 'rm -rf {{ zookeeper_home }}/conf'
+  args:
+    executable: /bin/bash 
+   
+
+- name: chown to Zookeeper conf
+  file:
+    path: "{{ zookeeper_conf_dir }}"
+    owner: zookeeper
+    group: hadoop
+    state: directory
+    recurse: yes  
+    
+- name: Linking zookeeper directories
+  file: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - { src: '{{ zookeeper_log_dir }}', dest: '{{ zookeeper_home }}/logs' }
+    - { src: '{{ zookeeper_conf_dir }}', dest: '{{ zookeeper_home }}/conf' }
+    - { src: '{{ zookeeper_pid_dir }}', dest: '{{ zookeeper_home }}/pids' }
+  become: true
+  become_user: zookeeper  
+    
+- name: Setting ZOOKEEPER environment variables
+  lineinfile: 
+    dest: "{{ item.dest }}"
+    insertafter: "EOF" 
+    line: "{{ item.line }}"
+    owner: zookeeper
+    group: hadoop
+    mode: 0755
+    create: yes
+  with_items:
+  - { line: 'export ZOO_LOG_DIR={{ zookeeper_log_dir }}', dest: '/etc/profile.d/zookeeper.sh' }
+  - { line: 'export ZOOKEEPER_PID_DIR={{ zookeeper_pid_dir }}', dest: '/etc/profile.d/zookeeper.sh' }
+  - { line: 'export ZOOKEEPER_HOME={{ zookeeper_home }}', dest: '/etc/profile.d/zookeeper.sh' }  
+  - { line: 'export ZOO_LOG_DIR={{ zookeeper_log_dir }}', dest: '{{ zookeeper_conf_dir }}/zookeeper-env.sh' } 
+  - { line: 'export ZOOKEEPER_HOME={{ zookeeper_home }}', dest: '/etc/profile.d/zookeeper.sh' } 
+    
+- name: Setting ZOOKEEPER environment var refresh
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash  
+  with_items:
+  - "source /etc/profile.d/zookeeper.sh"
+  - "source {{ zookeeper_conf_dir }}/zookeeper-env.sh"    
+    
+- name: Copying zoo cfg to zk hosts
+  template:
+    src: "{{ playbook_dir }}/roles/{{ role_name }}/templates/zoo.cfg"
+    dest: "{{ zookeeper_conf_dir }}/zoo.cfg"
+
+- name: Copying zkServer shell
+  template:
+    src: "{{ playbook_dir }}/roles/{{ role_name }}/templates/zkServer.sh"
+    dest: "{{ zookeeper_home }}/bin/zkServer.sh"
+ 
+- name: Setting ZOOKEEPER Configuration
+  shell: sudo su - -c 'echo server.1={{ hostvars[groups['zookeeper-hosts'][0]]['inventory_hostname'] }}:{{ zookeeper_cluster_port_1 }}:{{ zookeeper_cluster_port_2 }} >> {{ zookeeper_conf_dir }}/zoo.cfg'
+  args:
+    executable: /bin/bash  
+
+- name: Setting ZOOKEEPER Configuration 2
+  shell: sudo su - -c 'echo server.2={{ hostvars[groups['zookeeper-hosts'][1]]['inventory_hostname'] }}:{{ zookeeper_cluster_port_1 }}:{{ zookeeper_cluster_port_2 }} >> {{ zookeeper_conf_dir }}/zoo.cfg'
+  args:
+    executable: /bin/bash  
+    
+- name: Setting ZOOKEEPER Configuration 3
+  shell: sudo su - -c 'echo server.3={{ hostvars[groups['zookeeper-hosts'][2]]['inventory_hostname'] }}:{{ zookeeper_cluster_port_1 }}:{{ zookeeper_cluster_port_2 }} >> {{ zookeeper_conf_dir }}/zoo.cfg'
+  args:
+    executable: /bin/bash  
+    
+- name: Setting ZOOKEEPER Configuration 4
+  shell: sudo su - -c 'echo autopurge.snapRetainCount=3 >> {{ zookeeper_conf_dir }}/zoo.cfg'
+  args:
+    executable: /bin/bash  
+    
+- name: Setting ZOOKEEPER Configuration 5
+  shell: sudo su - -c 'echo autopurge.purgeInterval=1 >> {{ zookeeper_conf_dir }}/zoo.cfg'
+  args:
+    executable: /bin/bash  
+    
+- name: myid creation
+  shell: sudo su - -c 'echo 1 > {{ zookeeper_data_dir }}/myid'
+  args:
+    executable: /bin/bash  
+  when: (inventory_hostname == hostvars[groups['zookeeper-hosts'][0]]['inventory_hostname'])
+  
+- name: myid creation 2
+  shell: sudo su - -c 'echo 2 > {{ zookeeper_data_dir }}/myid'
+  args:
+    executable: /bin/bash  
+  when: (inventory_hostname == hostvars[groups['zookeeper-hosts'][1]]['inventory_hostname'])
+  
+- name: myid creation 3
+  shell: sudo su - -c 'echo 3 > {{ zookeeper_data_dir }}/myid'
+  args:
+    executable: /bin/bash  
+  when: (inventory_hostname == hostvars[groups['zookeeper-hosts'][2]]['inventory_hostname'])
+
+- name: chown zookeeper directories
+  file:
+    path: "{{ item }}"
+    owner: zookeeper
+    group: hadoop
+    recurse: yes
+    mode: 0755
+  become: yes
+  with_items:
+  - "{{ zookeeper_home }}"
+  - "{{ zookeeper_conf_dir }}"
+  - "{{ zookeeper_log_dir }}"
+  - "{{ zookeeper_data_dir }}"
+    
+- name: Copying startup script to zk hosts
+  template:
+    src: "{{ playbook_dir }}/roles/{{ role_name }}/templates/zookeeper"
+    dest: "/etc/init.d/zookeeper"
+    owner: zookeeper
+    group: hadoop
+    mode: 0755
+
+- name: Staring zookeeper Server
+  shell: /etc/init.d/zookeeper start
+  args:
+    executable: /bin/bash 
+  become: true
+    
+ 
