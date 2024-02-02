@@ -166,9 +166,17 @@
   args:
     executable: /bin/bash
   with_items:
-  - "echo kafka   - nofile 32768 >> /etc/security/limits.d/kafka.conf"
+  - "echo kafka   - nofile 262144 >> /etc/security/limits.d/kafka.conf"
   - "echo kafka   - nproc  65536 >> /etc/security/limits.d/kafka.conf"
-  
+
+- name: Setting max map count
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  with_items:
+    - "echo 'vm.max_map_count=262144' >> /etc/sysctl.conf"
+    - "sysctl -p"
+
 - name: Starting kafka broker
   shell: "export JAVA_HOME={{ kafka_java_home }} && export KAFKA_HEAP_OPTS='{{ kafka_heap_opts }}' && nohup bin/kafka-server-start {{ kafka_server_conf_dir }}/server.properties > /dev/null &"
   args:
