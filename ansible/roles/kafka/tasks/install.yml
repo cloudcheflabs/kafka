@@ -45,9 +45,17 @@
   - "{{ kafka_home }}"
   - "{{ kafka_conf_dir }}"
   - "{{ kafka_log_dir }}"
-  - "{{ kafka_data_dir1 }}"
-  - "{{ kafka_data_dir2 }}"
-  
+
+- name: Creating Kafka data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: kafka
+    group: hadoop
+    mode: 0755
+  with_items: "{{ kafka_data_dir.split(',') }}"
+
+
 - name: Creating kafka temp directory
   file:
     path: "{{ kafka_temp_dir }}"
@@ -147,8 +155,16 @@
   - "{{ kafka_log_dir }}"
   - "{{ kafka_conf_dir }}"
   - "{{ kafka_home }}"
-  - "{{ kafka_data_dir1 }}"
-  - "{{ kafka_data_dir2 }}"
+
+- name: chown kafka data directories
+  file:
+    path: "{{ item }}"
+    owner: kafka
+    group: hadoop
+    recurse: yes
+    mode: 0755
+  become: yes
+  with_items: "{{ kafka_data_dir.split(',') }}"
     
 - name: Setting KAFKA environment variables
   shell: "{{ item }}"

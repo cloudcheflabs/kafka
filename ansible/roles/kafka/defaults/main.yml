@@ -7,11 +7,7 @@ kafka_server_conf_dir: "{{ kafka_conf_dir }}/kafka"
 kafka_schema_registry_conf_dir: "{{ kafka_conf_dir }}/schema-registry"
 
 kafka_log_dir: /export/log/kafka
-
-kafka_data_dir1: /export/kafka-data/data01
-kafka_data_dir2: /export/kafka-data/data02
-
-kafka_data_dir: "{{ kafka_data_dir1 }},{{ kafka_data_dir2 }}"
+kafka_data_dir: "/export/kafka-data/data01,/export/kafka-data/data02"
 
 kafka_zk1_host: "{{ hostvars[groups['zookeeper-hosts'][0]]['inventory_hostname'] }}"
 kafka_zk2_host: "{{ hostvars[groups['zookeeper-hosts'][1]]['inventory_hostname'] }}"
