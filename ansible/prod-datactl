@@ -1,25 +1,25 @@
 [all-hosts]
-aidt-dev-kafka-datactl-1
-aidt-dev-kafka-datactl-2
-aidt-dev-kafka-datactl-3
+aidt-dev-kafka-datactl-01
+aidt-dev-kafka-datactl-02
+aidt-dev-kafka-datactl-03
 
 
 [zookeeper-hosts]
-aidt-dev-kafka-datactl-1
-aidt-dev-kafka-datactl-2
-aidt-dev-kafka-datactl-3
+aidt-dev-kafka-datactl-01
+aidt-dev-kafka-datactl-02
+aidt-dev-kafka-datactl-03
 
 
 [kafka-hosts]
-aidt-dev-kafka-datactl-1
-aidt-dev-kafka-datactl-2
-aidt-dev-kafka-datactl-3
+aidt-dev-kafka-datactl-01
+aidt-dev-kafka-datactl-02
+aidt-dev-kafka-datactl-03
 
 [kafka-schema-registry-hosts]
-aidt-dev-kafka-datactl-1
+aidt-dev-kafka-datactl-01
 
 [kafka-ui-hosts]
-aidt-dev-kafka-datactl-2
+aidt-dev-kafka-datactl-02
 
 
 [all-hosts:vars]
