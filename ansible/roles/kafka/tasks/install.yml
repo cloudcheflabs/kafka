@@ -84,7 +84,7 @@
     dest: "{{ kafka_temp_dir }}"
     
 - name: Extracting Kafka
-  shell: "tar -zxf {{ kafka_temp_dir }}/{{ kafka_dist_file }} -C {{ kafka_temp_dir }}"
+  shell: "tar -xf {{ kafka_temp_dir }}/{{ kafka_dist_file }} -C {{ kafka_temp_dir }}"
   args:
     executable: /bin/bash
     

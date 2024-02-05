@@ -16,7 +16,7 @@ kafka_zk3_host: "{{ hostvars[groups['zookeeper-hosts'][2]]['inventory_hostname']
 kafka_zk_hosts: "{{ kafka_zk1_host }}:2181,{{ kafka_zk2_host }}:2181,{{ kafka_zk3_host }}:2181"
 
 kafka_dist_name: confluent-community-7.5.3
-kafka_dist_file: "{{ kafka_dist_name }}.tar.gz"
+kafka_dist_file: "{{ kafka_dist_name }}.tar"
 kafka_dist_dir: confluent-7.5.3
 
 kafka_temp_dir: /tmp/kafka
