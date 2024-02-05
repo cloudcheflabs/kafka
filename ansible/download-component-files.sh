@@ -13,8 +13,8 @@ curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango
 mv apache-zookeeper-3.8.3-bin.tar.gz roles/zookeeper/files/
 
 # download kafka
-curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/confluent-community-7.5.3.tar.gz
-mv confluent-community-7.5.3.tar.gz roles/kafka/files/
+curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/confluent-community-7.5.3.tar
+mv confluent-community-7.5.3.tar roles/kafka/files/
 
 curl -L -O https://github.com/cloudcheflabs/chango-libs/releases/download/chango-private-deps/kafka-ui-api-v0.7.1.jar
 mv kafka-ui-api-v0.7.1.jar roles/kafka/files/
