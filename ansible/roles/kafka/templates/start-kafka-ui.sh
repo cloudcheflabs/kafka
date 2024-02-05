@@ -14,6 +14,7 @@ nohup $JAVA_HOME/bin/java \
 --add-opens java.base/sun.net=ALL-UNNAMED \
 --add-opens java.rmi/javax.rmi.ssl=ALL-UNNAMED \
 -Ddynamic.config.path={{ kafka_kafkaui_conf_dir }}/kafka-ui-config.yaml \
+-Dserver.port={{ kafka_kafkaui_port }} \
 -jar {{ kafka_kafkaui_dist_file }} > /{{ kafka_kafkaui_log_dir }}/out.log 2>&1 & echo $! > pid;
 
 echo "kafka ui pid: $(cat pid)";

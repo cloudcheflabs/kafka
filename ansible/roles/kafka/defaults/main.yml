@@ -42,6 +42,6 @@ kafka_kafkaui_home: /usr/lib/kafka-ui
 kafka_kafkaui_conf_dir: /etc/kafka-ui/conf
 kafka_kafkaui_log_dir: /export/log/kafka-ui
 kafka_kafkaui_dist_file: kafka-ui-api-v0.7.1.jar
-kafka_kafkaui_port: "8080"
+kafka_kafkaui_port: "8090"
 kafka_kafkaui_kafka_brokers: "{{ kafka_schema_registry_kafka_brokers }}"
 kafka_kafkaui_max_heap: "4G"
