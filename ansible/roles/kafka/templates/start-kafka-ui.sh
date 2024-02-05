@@ -2,6 +2,7 @@
 set -x
 
 export JAVA_HOME={{ kafka_java_home }}
+export DYNAMIC_CONFIG_PATH={{ kafka_kafkaui_conf_dir }}/kafka-ui-config.yaml
 
 nohup $JAVA_HOME/bin/java \
 -Xmx{{ kafka_kafkaui_max_heap }} \
@@ -13,7 +14,6 @@ nohup $JAVA_HOME/bin/java \
 --add-opens java.base/sun.security.action=ALL-UNNAMED \
 --add-opens java.base/sun.net=ALL-UNNAMED \
 --add-opens java.rmi/javax.rmi.ssl=ALL-UNNAMED \
--Ddynamic.config.path={{ kafka_kafkaui_conf_dir }}/kafka-ui-config.yaml \
 -Dserver.port={{ kafka_kafkaui_port }} \
 -jar {{ kafka_kafkaui_dist_file }} > /{{ kafka_kafkaui_log_dir }}/out.log 2>&1 & echo $! > pid;
 
