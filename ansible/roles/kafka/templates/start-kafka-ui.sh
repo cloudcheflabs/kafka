@@ -2,7 +2,8 @@
 set -x
 
 export JAVA_HOME={{ kafka_java_home }}
-export DYNAMIC_CONFIG_PATH={{ kafka_kafkaui_conf_dir }}/kafka-ui-config.yaml
+export DYNAMIC_CONFIG_PATH={{ kafka_kafkaui_conf_dir }}/kafka-ui-config.yaml;
+export DYNAMIC_CONFIG_ENABLED=true;
 
 nohup $JAVA_HOME/bin/java \
 -Xmx{{ kafka_kafkaui_max_heap }} \
