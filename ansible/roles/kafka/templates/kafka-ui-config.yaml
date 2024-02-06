@@ -1,5 +1,5 @@
 kafka:
   clusters:
-    - name: kafka-dev
+    - name: kafka-{{ kafka_kafkaui_cluster_name }}
       bootstrapServers: {{ kafka_kafkaui_kafka_brokers }}
       schemaRegistry: http://{{ kafka_schema_registry_host }}:{{ kafka_schema_registry_server_port }}

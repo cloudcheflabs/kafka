@@ -45,3 +45,4 @@ kafka_kafkaui_dist_file: kafka-ui-api-v0.7.1.jar
 kafka_kafkaui_port: "8090"
 kafka_kafkaui_kafka_brokers: "{{ kafka_schema_registry_kafka_brokers }}"
 kafka_kafkaui_max_heap: "4G"
+kafka_kafkaui_cluster_name: "dev"
